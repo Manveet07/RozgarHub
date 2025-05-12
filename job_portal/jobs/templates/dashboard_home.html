@@ -1,0 +1,287 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Dashboard -
+RozgarHub{% endblock %} {% block extra_css %}
+<style>
+  :root {
+    --card-hover-transform: translateY(-10px);
+  }
+
+  .dashboard-hero {
+    /* background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); */
+    padding: 60px 0;
+    color: rgb(110, 110, 110);
+    position: relative;
+    overflow: hidden;
+    margin-top: -2.5rem;
+
+    border-radius: 30px 30px 30px 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .dashboard-hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("/static/images/pattern.png");
+    opacity: 0.1;
+    animation: float 20s linear infinite;
+  }
+
+  @keyframes float {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 100% 100%;
+    }
+  }
+
+  .dashboard-hero .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  .dashboard-hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+
+    animation: fadeInDown 0.8s ease-out;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    color: white;
+  }
+
+  .dashboard-hero p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  .stats-container {
+    background: var(--card-bg-light);
+    border-radius: 15px;
+    padding: 2rem;
+    margin-top: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 1s ease-out;
+  }
+
+  body.dark-mode .stats-container {
+    background: var(--card-bg-dark);
+  }
+
+  .stat-card {
+    text-align: center;
+    padding: 1.5rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  }
+
+  body.dark-mode .stat-card {
+    background: var(--card-bg-dark);
+  }
+
+  .stat-card:hover {
+    transform: var(--card-hover-transform);
+    box-shadow: 0 8px 25px rgba(106, 13, 173, 0.15);
+  }
+
+  .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(
+      135deg,
+      var(--primary-color),
+      var(--secondary-color)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    color: var(--light-text);
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  body.dark-mode .stat-label {
+    color: var(--dark-text);
+  }
+
+  .quick-actions {
+    margin-top: 3rem;
+  }
+
+  .action-card {
+    background: var(--card-bg-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    height: 100%;
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  }
+
+  body.dark-mode .action-card {
+    background: var(--card-bg-dark);
+  }
+
+  .action-card:hover {
+    transform: var(--card-hover-transform);
+    box-shadow: 0 8px 25px rgba(106, 13, 173, 0.15);
+  }
+
+  .action-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(
+      135deg,
+      var(--primary-color),
+      var(--secondary-color)
+    );
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    color: white;
+  }
+
+  .action-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+  }
+
+  body.dark-mode .action-card h3 {
+    color: var(--secondary-color);
+  }
+
+  .action-card p {
+    color: var(--light-text);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  body.dark-mode .action-card p {
+    color: var(--dark-text);
+  }
+
+  .btn-action {
+    background: linear-gradient(
+      135deg,
+      var(--primary-color),
+      var(--secondary-color)
+    );
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .btn-action:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(106, 13, 173, 0.3);
+    color: white;
+  }
+
+  @media (max-width: 768px) {
+    .dashboard-hero h1 {
+      font-size: 2rem;
+    }
+    .stat-card {
+      margin-bottom: 1rem;
+    }
+    .action-card {
+      margin-bottom: 1.5rem;
+    }
+  }
+</style>
+{% endblock %} {% block content %}
+<section class="dashboard-hero">
+  <div class="container text-center">
+    <h1>Welcome</h1>
+    <p>Your gateway to professional opportunities and career growth</p>
+  </div>
+</section>
+
+<div class="container">
+  <div class="stats-container">
+    <div class="row">
+      <div class="col-md-3 col-sm-6 mb-4">
+        <div class="stat-card">
+          <div class="stat-number">150+</div>
+          <div class="stat-label">Available Jobs</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 mb-4">
+        <div class="stat-card">
+          <div class="stat-number">45</div>
+          <div class="stat-label">Applied Jobs</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 mb-4">
+        <div class="stat-card">
+          <div class="stat-number">28</div>
+          <div class="stat-label">Interviews</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 mb-4">
+        <div class="stat-card">
+          <div class="stat-number">92%</div>
+          <div class="stat-label">Profile Complete</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quick-actions">
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="action-card">
+          <div class="action-icon">📝</div>
+          <h3>Complete Your Profile</h3>
+          <p>
+            Make your profile stand out to potential employers. Add your skills,
+            experience, and achievements.
+          </p>
+          <a href="{% url 'profile_display' %}" class="btn btn-action"
+            >View Profile</a
+          >
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="action-card">
+          <div class="action-icon">🔍</div>
+          <h3>Browse Jobs</h3>
+          <p>
+            Explore the latest job opportunities that match your skills and
+            experience.
+          </p>
+          <a href="{%url 'dashboard'%}" class="btn btn-action">Search Jobs</a>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="action-card">
+          <div class="action-icon">📊</div>
+          <h3>Track Applications</h3>
+          <p>Monitor your job applications and stay updated on their status.</p>
+          <a href="{%url 'dashboard'%}" class="btn btn-action"
+            >View Applications</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

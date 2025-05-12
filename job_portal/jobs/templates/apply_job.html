@@ -1,0 +1,84 @@
+{% extends 'jobs/base.html' %}
+<style>:root {
+    --primary-color: #6a0dad;
+    --secondary-color: #8e44ad;
+    --light-bg: #f8f9fa;
+    --light-text: #343a40;
+    --dark-bg: #1e1e2f;
+    --dark-text: #f8f9fa;
+    --card-bg-light: #ffffff;
+    --card-bg-dark: #2c2c54;
+    --card-text-light: #333333;
+    --card-text-dark: #f8f9fa;
+}
+
+body {
+    background-color: var(--light-bg);
+    color: var(--light-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode {
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+}
+
+.card {
+    background-color: var(--card-bg-light);
+    color: var(--card-text-light);
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+body.dark-mode .card {
+    background-color: var(--card-bg-dark);
+    color: var(--card-text-dark);
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+header, footer {
+    background-color: var(--primary-color);
+    color: var(--light-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode header, body.dark-mode footer {
+    background-color: var(--secondary-color);
+    color: var(--dark-text);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-color);
+}
+
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
+    color: var(--secondary-color);
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+body.dark-mode a {
+    color: var(--secondary-color);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+</style>
+{% block content %}
+<h2>Apply for {{ job.title }} at {{ job.company }}</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Apply</button>
+</form>
+{% endblock %}

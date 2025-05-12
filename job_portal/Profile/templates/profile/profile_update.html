@@ -1,0 +1,527 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Update Profile -
+RozgarHub{% endblock %} {% block extra_css %}
+<style>
+  :root {
+    --primary-color: #6a0dad;
+    --secondary-color: #8e44ad;
+    --light-bg: #f8f9fa;
+    --light-text: #343a40;
+    --dark-bg: #1e1e2f;
+    --dark-text: #f8f9fa;
+    --card-bg-light: #ffffff;
+    --card-bg-dark: #2c2c54;
+    --card-text-light: #333333;
+    --card-text-dark: #f8f9fa;
+  }
+
+  .profile-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+  }
+
+  .profile-header {
+    background: linear-gradient(
+      135deg,
+      var(--primary-color),
+      var(--secondary-color)
+    );
+    color: white;
+    padding: 40px 20px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 20px rgba(106, 13, 173, 0.15);
+    text-align: center;
+  }
+
+  .profile-picture-container {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 20px;
+    position: relative;
+  }
+
+  .profile-picture {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .profile-picture-upload {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: var(--primary-color);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .profile-name {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+  }
+
+  .profile-role {
+    font-size: 1.2rem;
+    opacity: 0.9;
+  }
+
+  .profile-card {
+    background: var(--card-bg-light);
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+  }
+
+  .section-title {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-color);
+  }
+
+  .form-control {
+    border: 2px solid #e1e1e1;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+  }
+
+  .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(106, 13, 173, 0.25);
+  }
+
+  .btn-update {
+    background: linear-gradient(
+      135deg,
+      var(--primary-color),
+      var(--secondary-color)
+    );
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .btn-update:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(106, 13, 173, 0.3);
+  }
+
+  .btn-update:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .dynamic-form-section {
+    margin-bottom: 20px;
+  }
+
+  .form-item {
+    border: 1px solid #e1e1e1;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    position: relative;
+  }
+
+  .btn-add-item {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .btn-add-item:hover {
+    background: var(--secondary-color);
+    transform: translateY(-2px);
+  }
+
+  .btn-remove-item {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .btn-remove-item:hover {
+    background: #cc0000;
+    transform: scale(1.1);
+  }
+
+  .is-invalid {
+    border-color: #dc3545;
+  }
+
+  .invalid-feedback {
+    display: block;
+    width: 100%;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    font-size: 0.875em;
+    color: #dc3545;
+  }
+
+  @media (max-width: 768px) {
+    .profile-container {
+      padding: 10px;
+    }
+
+    .profile-name {
+      font-size: 2rem;
+    }
+
+    .profile-card {
+      padding: 20px;
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .alert {
+    animation: slideIn 0.3s ease-out;
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="profile-container">
+  <div id="form-errors"></div>
+
+  {% if messages %} {% for message in messages %}
+  <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+    {{ message }}
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+  {% endfor %} {% endif %}
+
+  <div class="profile-header">
+    <div class="profile-picture-container">
+      {% if profile.profile_picture %}
+      <img
+        src="{{ profile.profile_picture.url }}"
+        alt="Profile Picture"
+        class="profile-picture"
+      />
+      {% else %}
+      <img
+        src="{% static 'images/default-profile.jpg' %}"
+        alt="Default Profile"
+        class="profile-picture"
+      />
+      {% endif %}
+      <label
+        for="profile-picture-input"
+        class="profile-picture-upload"
+        title="Upload profile picture"
+      >
+        📷
+      </label>
+    </div>
+    <h1 class="profile-name">{{ user.first_name }} {{ user.last_name }}</h1>
+    <p class="profile-role">{{ user.user_type|title }}</p>
+  </div>
+
+  <form method="POST" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    <input type="hidden" name="user_type" value="{{ user.user_type }}" />
+    <input
+      type="file"
+      id="profile-picture-input"
+      name="profile_picture"
+      style="display: none"
+      accept="image/*"
+    />
+
+    <div class="profile-card">
+      <h2 class="section-title">Basic Information</h2>
+      <div class="form-group">
+        <label for="bio">Bio</label>
+        <textarea
+          class="form-control"
+          id="bio"
+          name="bio"
+          rows="4"
+          placeholder="Tell us about yourself"
+        >
+{{ profile.bio }}</textarea
+        >
+      </div>
+      <div class="form-group">
+        <label for="location">Location</label>
+        <input
+          type="text"
+          class="form-control"
+          id="location"
+          name="location"
+          value="{{ profile.location }}"
+          placeholder="Your location"
+        />
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input
+          type="tel"
+          class="form-control"
+          id="phone"
+          name="phone"
+          value="{{ profile.phone }}"
+          placeholder="+91 XXXXXXXXXX"
+        />
+      </div>
+    </div>
+
+    {% if user.user_type == "employer" %}
+    <div class="profile-card">
+      <h2 class="section-title">Company Information</h2>
+      <div class="form-group">
+        <label for="company_name">Company Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="company_name"
+          name="company_name"
+          value="{{ profile.company_name }}"
+          placeholder="Your company name"
+        />
+      </div>
+      <div class="form-group">
+        <label for="company_website">Company Website</label>
+        <input
+          type="url"
+          class="form-control"
+          id="company_website"
+          name="company_website"
+          value="{{ profile.company_website }}"
+          placeholder="https://www.example.com"
+        />
+      </div>
+      <div class="form-group">
+        <label for="about_company">About Company</label>
+        <textarea
+          class="form-control"
+          id="about_company"
+          name="about_company"
+          rows="4"
+          placeholder="Tell us about your company"
+        >
+{{ profile.about_company }}</textarea
+        >
+      </div>
+      <div class="form-group">
+        <label for="number_of_employees">Number of Employees</label>
+        <input
+          type="number"
+          class="form-control"
+          id="number_of_employees"
+          name="number_of_employees"
+          value="{{ profile.number_of_employees }}"
+          placeholder="e.g., 100"
+        />
+      </div>
+      <div class="form-group">
+        <label for="industry">Industry</label>
+        <input
+          type="text"
+          class="form-control"
+          id="industry"
+          name="industry"
+          value="{{ profile.industry }}"
+          placeholder="e.g., Technology, Healthcare, Finance"
+        />
+      </div>
+    </div>
+    {% else %}
+    <div class="profile-card">
+      <h2 class="section-title">Professional Information</h2>
+      <div class="form-group">
+        <label for="skills">Skills</label>
+        <textarea
+          class="form-control"
+          id="skills"
+          name="skills"
+          rows="3"
+          placeholder="Your skills (e.g., Python, JavaScript, Project Management)"
+        >
+{{ profile.skills }}</textarea
+        >
+      </div>
+
+      <div class="dynamic-form-section">
+        <h3>Work Experience</h3>
+        <button type="button" class="btn-add-item" onclick="addExperience()">
+          + Add Experience
+        </button>
+        <div id="experience-container">
+          <!-- Dynamic experience fields will be added here -->
+        </div>
+      </div>
+
+      <div class="dynamic-form-section">
+        <h3>Education</h3>
+        <button type="button" class="btn-add-item" onclick="addEducation()">
+          + Add Education
+        </button>
+        <div id="education-container">
+          <!-- Dynamic education fields will be added here -->
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="text-center mb-4">
+      <button type="submit" class="btn-update">Update Profile</button>
+    </div>
+  </form>
+</div>
+{% endblock %} {% block extra_js %}
+<script src="{% static 'js/profile_validation.js' %}"></script>
+<script>
+  // Handle file input change
+  document
+    .getElementById("profile-picture-input")
+    .addEventListener("change", function () {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.querySelector(".profile-picture").src = e.target.result;
+        };
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+
+  // Add a unique index to each item for validation
+  let experienceIndex = 0;
+  let educationIndex = 0;
+
+  function addExperience() {
+    const container = document.getElementById("experience-container");
+    const formItem = document.createElement("div");
+    formItem.className = "form-item";
+    formItem.innerHTML = `
+            <button type="button" class="btn-remove-item" onclick="this.parentElement.remove()">×</button>
+            <div class="form-group">
+                <label>Title/Position</label>
+                <input type="text" class="form-control" id="experience_title_${experienceIndex}" name="experience_title[]" required>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea class="form-control" id="experience_description_${experienceIndex}" name="experience_description[]" rows="3" required></textarea>
+            </div>
+        `;
+    container.appendChild(formItem);
+    experienceIndex++;
+  }
+
+  function addEducation() {
+    const container = document.getElementById("education-container");
+    const formItem = document.createElement("div");
+    formItem.className = "form-item";
+    formItem.innerHTML = `
+            <button type="button" class="btn-remove-item" onclick="this.parentElement.remove()">×</button>
+            <div class="form-group">
+                <label>Degree/Program</label>
+                <input type="text" class="form-control" id="education_degree_${educationIndex}" name="education_degree[]" required>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea class="form-control" id="education_description_${educationIndex}" name="education_description[]" rows="3" required></textarea>
+            </div>
+        `;
+    container.appendChild(formItem);
+    educationIndex++;
+  } // Initialize form with existing data
+  window.addEventListener("load", function () {
+    if (document.getElementById("experience-container")) {
+      // Initialize experiences
+      const experiencesData = JSON.parse(
+        '{{ profile.experience|default:"[]"|escapejs }}'
+      );
+      experiencesData.forEach((exp) => {
+        const container = document.getElementById("experience-container");
+        const formItem = document.createElement("div");
+        formItem.className = "form-item";
+        formItem.innerHTML = `
+                    <button type="button" class="btn-remove-item" onclick="this.parentElement.remove()">×</button>
+                    <div class="form-group">
+                        <label>Title/Position</label>
+                        <input type="text" class="form-control" id="experience_title_${experienceIndex}" name="experience_title[]" value="${exp.title}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea class="form-control" id="experience_description_${experienceIndex}" name="experience_description[]" rows="3" required>${exp.description}</textarea>
+                    </div>
+                `;
+        container.appendChild(formItem);
+        experienceIndex++;
+      });
+
+      // Initialize education
+      const educationsData = JSON.parse(
+        '{{ profile.education|default:"[]"|escapejs }}'
+      );
+      educationsData.forEach((edu) => {
+        const container = document.getElementById("education-container");
+        const formItem = document.createElement("div");
+        formItem.className = "form-item";
+        formItem.innerHTML = `
+                    <button type="button" class="btn-remove-item" onclick="this.parentElement.remove()">×</button>
+                    <div class="form-group">
+                        <label>Degree/Program</label>
+                        <input type="text" class="form-control" id="education_degree_${educationIndex}" name="education_degree[]" value="${edu.degree}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea class="form-control" id="education_description_${educationIndex}" name="education_description[]" rows="3" required>${edu.description}</textarea>
+                    </div>
+                `;
+        container.appendChild(formItem);
+        educationIndex++;
+      });
+    }
+  });
+</script>
+{% endblock %}

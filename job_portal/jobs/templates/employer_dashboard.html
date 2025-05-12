@@ -1,0 +1,387 @@
+{% extends "base.html" %}
+
+{% block title %}Employer Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Global Styles */
+    body {
+        background-color: #f4f7fb;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    :root {
+        --primary-color: #6a0dad;
+        --secondary-color: #8e44ad;
+        --light-bg: #f4f7fb;
+        --dark-bg: #22252a;
+        --light-text: #343a40;
+        --dark-text: #f4f7fb;
+        --card-bg-light: #ffffff;
+        --card-bg-dark: #2c2c54;
+        --card-text-light: #333333;
+        --card-text-dark: #f4f7fb;
+    }
+
+    body {
+        background-color: var(--light-bg);
+        color: var(--light-text);
+    }
+
+    body.dark-mode {
+        background-color: var(--dark-bg);
+        color: var(--dark-text);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        color: var(--primary-color);
+    }
+
+    body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
+        color: var(--secondary-color);
+    }
+
+    /* Header, Footer */
+  
+
+    body.dark-mode header, body.dark-mode footer {
+        background-color: var(--secondary-color);
+        color: var(--dark-text);
+    }
+
+    /* Card Styling */
+    .card {
+        background-color: var(--card-bg-light);
+        color: var(--card-text-light);
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 20px;
+    }
+
+    body.dark-mode .card {
+        background-color: var(--card-bg-dark);
+        color: var(--card-text-dark);
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: var(--primary-color);
+        font-style: oblique;
+    }
+
+    .card-subtitle {
+        font-size: 1.1rem;
+        color: #777;
+    }
+
+    .list-group-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f7f7f7;
+        border: none;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    .list-group-item p {
+        margin: 0;
+    }
+
+    .btn-primary, .btn-secondary, .btn-danger {
+        border-radius: 5px;
+        padding: 8px 12px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-primary:hover, .btn-secondary:hover, .btn-danger:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        padding: 12px;
+        background-color: var(--card-bg-light);
+        border: 2px solid #e1e1e1;
+        color: var(--card-text-light);
+        transition: all 0.3s ease;
+    }
+
+    body.dark-mode .form-control {
+        background-color: var(--card-bg-dark);
+        color: var(--card-text-dark);
+        border-color: #4a4a4a;
+    }
+
+    .modal-content {
+        border-radius: 10px;
+    }
+
+    .modal-header {
+        background-color: #6a0dad;
+        color: white;
+    }
+
+    .modal-body p {
+        margin-bottom: 10px;
+    }
+
+    .modal-backdrop.show {
+        background-color: rgba(141, 108, 165, 0.2) !important;
+    }
+
+    .container {
+        margin-top: 30px;
+    }
+
+    .container h1 {
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 10px;
+    }
+
+    /* Layout */
+    .row {
+        margin-bottom: 30px;
+    }
+
+    .col-md-8, .col-md-4 {
+        margin-bottom: 30px;
+    }
+
+    .mt-5 {
+        margin-top: 50px;
+    }
+
+    .mb-3 {
+        margin-bottom: 1.5rem;
+    }
+
+    .mb-4 {
+        margin-bottom: 2rem;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+        pointer-events: none;
+    }
+
+    .modal {
+        z-index: 1055 !important;
+        pointer-events: auto !important;
+        margin-top: 6.75rem;
+    }
+
+    /* Edit Job Modal */
+    .edit-job-btn {
+        margin-right: 10px;
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+    }
+
+    .edit-job-btn:hover {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <section class="jobs-section">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="postedJobsHeading mb-4">
+                    <h2>My Posted Jobs</h2>
+                    <p class="text-muted">Manage your job listings</p>
+                </div>
+                <div class="job-listings">
+                    {% for job in jobs %}
+                        <div class="card mb-4 shadow-sm" data-job-id="{{ job.id }}">
+                            <div class="card-body">
+                                <h5 class="card-title" style="font-style: oblique;">{{ job.title }}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted" style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">Company: {{ job.company }}</h6>
+                                <p class="card-text">Location: {{ job.location }}</p>
+                                <p class="card-text">{{ job.description }}</p>
+                                <div class="btn-group">
+                                    <button class="btn btn-danger" onclick="deleteJob('{{ job.id }}')">Delete Job</button>
+                                </div>
+                                <h6 class="mt-3">Applicants:</h6>
+                                <ul class="list-group">
+                                    {% for application in job.applications %}
+                                        <li class="list-group-item">
+                                            <p>{{ application.user_email }}</p>
+                                            <button class="btn btn-secondary btn-sm" onclick="showApplicantDetails('{{ application.id }}')">View Details</button>
+                                        </li>
+                                    {% empty %}
+                                        <li class="list-group-item">No applicants yet.</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h2 class="mb-3">Post a New Job</h2>
+                        <form method="POST" action="{% url 'post_job' %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="job-title" class="form-label">Job Title</label>
+                                <input type="text" class="form-control" id="job-title" name="title" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="job-company" class="form-label">Company</label>
+                                <input type="text" class="form-control" id="job-company" name="company" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="job-description" class="form-label">Job Description</label>
+                                <textarea class="form-control" id="job-description" name="description" rows="3" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="job-location" class="form-label">Location</label>
+                                <input type="text" class="form-control" id="job-location" name="location" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Post Job</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Applicant Details Modal -->
+<div class="modal fade" id="applicantDetailsModal" tabindex="-1" aria-labelledby="applicantDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="applicantDetailsModalLabel">Applicant Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="applicant-description"></p>
+                <p><strong>Resume:</strong></p>
+                <p id="applicant-resume"></p>
+                <p><strong>Why Should We Hire You?</strong></p>
+                <p id="applicant-cover-letter"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function deleteJob(jobId) {
+        if (confirm('Are you sure you want to delete this job?')) {
+            fetch(`/delete_job/${jobId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin'
+            })
+            .then(async response => {
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('Expected JSON response from server');
+                }
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || data.details || 'Error deleting job');
+                }
+                return data;
+            })
+            .then(data => {
+                // Remove the job card from the DOM
+                const jobCard = document.querySelector(`[data-job-id="${jobId}"]`);
+                if (jobCard) {
+                    jobCard.remove();
+                }
+                alert(data.message || 'Job deleted successfully');
+                // No need to reload since we already removed the card
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message || 'Error deleting job. Please try again.');
+            });
+        }
+    }
+
+    function showApplicantDetails(applicationId) {
+        fetch(`/employer_application_details/${applicationId}/`, {
+            method: 'GET',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+        })
+        .then(async response => {
+            const contentType = response.headers.get('content-type');
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error || data.details || `Server error: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('applicant-resume').innerHTML = data.resume ? 
+                `<a href="/uploads/${data.resume}" target="_blank">View Resume</a>` : 
+                'No resume available';
+            document.getElementById('applicant-cover-letter').textContent = data.cover_letter || 'No cover letter available';
+            
+            const modal = new bootstrap.Modal(document.getElementById('applicantDetailsModal'));
+            modal.show();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert(error.message || 'Error fetching applicant details. Please try again.');
+        });
+    }
+</script>
+{% endblock %}
