@@ -385,11 +385,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p><strong>Job Title:</strong> <span id="application-job-title"></span></p>
-                <p><strong>Company:</strong> <span id="application-company"></span></p>
-                <p><strong>Location:</strong> <span id="application-location"></span></p>
-                <p><strong>Description:</strong></p>
-                <p id="application-description"></p>
+               
                 <p><strong>Resume:</strong></p>
                 <p id="application-resume"></p>
                 <p><strong>Why Should We Hire You?</strong></p>
@@ -451,10 +447,7 @@
             const data = await response.json();
             
             if (response.ok) {
-                document.getElementById('application-job-title').textContent = data.job_title || 'N/A';
-                document.getElementById('application-company').textContent = data.company || 'N/A';
-                document.getElementById('application-location').textContent = data.location || 'N/A';
-                document.getElementById('application-description').textContent = data.description || 'N/A';
+              
                 document.getElementById('application-resume').innerHTML = data.resume ? 
                     `<a href="/uploads/${data.resume}" target="_blank">View Resume</a>` : 
                     'No resume attached';
